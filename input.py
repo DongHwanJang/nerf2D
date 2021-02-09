@@ -18,7 +18,7 @@ class PositionEncoding(object):
 
         L = 10
 
-        x_linspace = (np.linspace(0, W - 1, W) / W) * 2 - 1
+        x_linspace = (np.linspace(0, W - 1, W) / W) * 2 - 1 # -1~0.996xxx
         y_linspace = (np.linspace(0, H - 1, H) / H) * 2 - 1
 
         x_el = []

@@ -7,6 +7,7 @@ import cv2 as cv2
 from random import random
 import time
 
+import utils
 from input import PositionEncoding, PositionEncodingScale, PositionEncodingShift, random_jitter
 from loss import discriminator_loss, generator_loss
 from network.discriminator import Discriminator
@@ -25,14 +26,11 @@ parser.add_argument('--name', type=str, default=default_name,
 
 args = parser.parse_args()
 
-im = Image.open('dataset/cool_cows.jpg')
-im2arr = np.array(im)
-ckpt_path = f'load/ckpt_latset_{args.name}.ckpt'
+img_name = args.name
+pe, img_shape, testimg = utils.load_img_PE(img_name)
 
-testimg = im2arr
-testimg = testimg / 255.0
-H, W, C = testimg.shape
-
+# Get Scaled_H, Scaled_W for finer output display
+H, W, C = img_shape
 scale = 2.0
 scaled_H, scaled_W = int(scale * H), int(scale * W)
 _read_img = np.zeros((scaled_H, scaled_W, 3))
@@ -43,6 +41,8 @@ PEScale = PositionEncodingScale(testimg, 'sin_cos', scale=scale)
 
 dataset_size = PE.dataset_size
 
+ckpt_path = f'load/ckpt_latest_{img_name}'
+
 # TODO 1: calibrate lr for each optimizers.
 loss_object = tf.keras.losses.MeanSquaredError()
 optimizer = tfa.optimizers.AdamW(weight_decay=1e-4, lr=1e-2)
@@ -51,7 +51,7 @@ discriminator_optimizer = tfa.optimizers.AdamW(weight_decay=1e-4, lr=1e-2, beta_
 # TODO 1: compare which optimizer is better
 if False:
     optimizer = tf.keras.optimizers.Adam(lr=1e-2)
-    l
+
     generator_optimizer = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
     discriminator_optimizer = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 

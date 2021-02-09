@@ -1,3 +1,6 @@
 results/
 .idea
 __pycache__/
+tmp.py
+load/
+dataset/
